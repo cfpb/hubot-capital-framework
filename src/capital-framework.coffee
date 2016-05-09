@@ -5,7 +5,7 @@
 #   HUBOT_GITHUB_CF_TOKEN - (required) Github access token that can access cfpb/capital-framework. See https://help.github.com/articles/creating-an-access-token-for-command-line-use/.
 #
 # Commands:
-#   capital framework release - Create a Capital Framework release PR
+#   hubot capital framework release - Create a Capital Framework release PR
 #
 # Author:
 #   contolini
