@@ -1,0 +1,11 @@
+module.exports =
+  success: '😸'
+  failure: '😿'
+  wait: '🕑'
+  team: '👪'
+  user: '🙋'
+  repo: '📦'
+  public: '🔓'
+  private: '🔒'
+  fork: '🍴'
+  star: '⭐︎'
