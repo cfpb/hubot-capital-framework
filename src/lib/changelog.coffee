@@ -68,7 +68,9 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
   # If this is the case, bump CF and we're done
   if bumpCF
     pkg.version = semver.inc pkg.version, bumpCF
-    return fs.writeFileSync(packageLocation, JSON.stringify(pkg, null, 2));
+    unreleased = "Bump Capital Framework to #{pkg.version}. No components were updated."
+    fs.writeFileSync(packageLocation, JSON.stringify(pkg, null, 2));
+    return cb null, unreleased
 
   # Otherwise, bump the components mentioned in the changelog
   unreleased = ""
