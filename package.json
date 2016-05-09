@@ -4,7 +4,12 @@
   "version": "1.0.0",
   "author": "Chris Contolini <contolini@users.noreply.github.com>",
   "license": "CC0",
-  "keywords": ["hubot","hubot-scripts","catops","capital framework"],
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "catops",
+    "capital framework"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/catops/hubot-capital-framework.git"
@@ -13,7 +18,9 @@
     "url": "https://github.com/catops/hubot-capital-framework/issues"
   },
   "dependencies": {
-    "coffee-script": "~1.10"
+    "coffee-script": "~1.10",
+    "github": "^0.2.4",
+    "tmp": "0.0.28"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,6 +1,6 @@
-# hubot-capital-framework [![Build Status](https://img.shields.io/travis/catops/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/catops/hubot-capital-framework) [![npm](https://img.shields.io/npm/v/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/hubot-capital-framework)
+# hubot-capital-framework [![Build Status](https://img.shields.io/travis/cfpb/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/cfpb/hubot-capital-framework) [![npm](https://img.shields.io/npm/v/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/hubot-capital-framework)
 
-:cat: A Hubot script to manage CFPB's Capital Framework
+:cat: A Hubot script to manage CFPB's [Capital Framework](https://github.com/cfpb/capital-framework).
 
 See [`src/capital-framework.coffee`](src/capital-framework.coffee) for full documentation.
 
@@ -19,13 +19,8 @@ Then add **hubot-capital-framework** to your `external-scripts.json`:
 ## Sample Interaction
 
 ```
-user1>> hubot hello
-hubot>> hello!
-```
-
-```
-user1>> hubot orly
-hubot>> yarly
+user1>> cf release
+hubot>> 😸 Success! Here's the release PR: https://github.com/cfpb/capital-framework/pull/123. Please verify its accuracy and merge away.
 ```
 
 ## Contributing

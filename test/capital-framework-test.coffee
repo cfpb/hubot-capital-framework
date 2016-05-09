@@ -51,36 +51,7 @@ describe 'capital-framework', ->
   afterEach ->
     robot.shutdown()
 
-  beforeEach ->
-    require('../src/capital-framework')(robot)
-
-  describe 'really cool feature', ->
-    it 'greets you back', (done)->
-      # If the bot is `reply`ing to the user, use `replyMessage`
-      messageHelper.replyMessage done, 'hubot hello', (result) ->
-        expect(result[0]).to.equal('hello!')
-
-  describe 'other really cool feature', ->
-    # Otherwise, use `sendMessage`
-    it "ignores you if you're not an admin", (done) ->
-      process.env.HUBOT_AUTH_ADMIN = []
-      messageHelper.sendMessage done, 'orly', (result) ->
-        expect(result[0]).to.equal('Sorry, only admins can do that.')
-
-    it "reponds if you're an admin", (done)->
-      messageHelper.sendMessage done, 'orly', (result) ->
-        expect(result[0]).to.equal('yarly')
-
-  describe 'storage features', ->
-    it "adds items", (done) ->
-      messageHelper.sendMessage done, 'hubot add foo to the thing', (result) ->
-        expect(result[0]).to.equal('Alright, I added foo to the thing.')
-
-    it "removes items", (done) ->
-      messageHelper.sendMessage done, 'hubot remove foo from the thing', (result) ->
-        expect(result[0]).to.equal('Okay, I removed foo from the thing.')
-
-    it "only lets admins remove items", (done) ->
-      process.env.HUBOT_AUTH_ADMIN = []
-      messageHelper.sendMessage done, 'hubot remove foo from the thing', (result) ->
-        expect(result[0]).to.equal('Sorry, only admins can remove stuff.')
+  describe 'capital framework plugin', ->
+    it 'can be imported without blowing up', () ->
+      cf = require('../src/capital-framework')(robot)
+      expect(()->cf).to.not.throw()

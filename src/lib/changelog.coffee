@@ -2,10 +2,10 @@ fs = require 'fs'
 path = require 'path'
 semver = require 'semver'
 
-updateChangelog = (changelogFile, package, cb) ->
+updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
 
-  changelog = fs.readFileSync(changelogFile, 'utf8')
-  pkg = require package
+  changelog = fs.readFileSync(changelogLocation, 'utf8')
+  pkg = require packageLocation
   bumpAllComponents = undefined
   bumpCF = false
 
@@ -68,7 +68,7 @@ updateChangelog = (changelogFile, package, cb) ->
   # If this is the case, bump CF and we're done
   if bumpCF
     pkg.version = semver.inc pkg.version, bumpCF
-    return fs.writeFileSync(package, JSON.stringify(pkg, null, 2));
+    return fs.writeFileSync(packageLocation, JSON.stringify(pkg, null, 2));
 
   # Otherwise, bump the components mentioned in the changelog
   unreleased = ""
@@ -81,7 +81,7 @@ updateChangelog = (changelogFile, package, cb) ->
         # We're doing this ugly file reading instead of simply `require`ing because
         # the component manifests have a comment block that would get removed if we
         # `JSON.stringify`ed them.
-        manifestFile = path.join(__dirname, 'src', component.name, 'package.json')
+        manifestFile = path.join(tmpLocation, 'src', component.name, 'package.json')
         manifest = fs.readFileSync manifestFile, 'utf8'
         bumpType = if bumpAllComponents then [bumpAllComponents, component.bump].sort().shift() else component.bump
         bump = semver.inc JSON.parse(manifest).version, bumpType
@@ -93,7 +93,7 @@ updateChangelog = (changelogFile, package, cb) ->
     unreleased += "\n" if type != Object.keys(types)[Object.keys(types).length - 1]
 
   changelog = changelog.replace unreleasedSection, "## Unreleased\n\n#{unreleased}\n"
-  fs.writeFileSync changelogFile, changelog
-  cb null, types
+  fs.writeFileSync changelogLocation, changelog
+  cb null, unreleased
 
-module.export = updateChangelog
+module.exports = updateChangelog

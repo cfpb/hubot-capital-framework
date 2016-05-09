@@ -1,29 +1,35 @@
 tmp = require 'tmp'
 {exec} = require 'child_process'
+path = require 'path'
 icons = require './icons'
 changelog = require './changelog'
+pr = require './pull-request'
 
-token = process.env.HUBOT_GITHUB_ORG_TOKEN
+token = process.env.HUBOT_GITHUB_CF_TOKEN
 cf = "https://github.com/cfpb/capital-framework.git"
 branch = "release#{Date.now()}"
 
 init = (res, cb) ->
-  tmp.dir {unsafeCleanup: true}, (err, path, cleanup) ->
+  tmp.dir {unsafeCleanup: true, keep: true}, (err, tmpath, cleanup) ->
+    console.log tmpath
     return res.send "#{icons.failure} #{err}" if err
     res.send "#{icons.wait} Cloning Capital Framework's `canary` branch..."
-    exec "git clone #{cf} .", {cwd: path}, (err) ->
+    exec "git clone #{cf} .", {cwd: tmpath}, (err) ->
       return res.send "#{icons.failure} #{err}" if err
       res.send "#{icons.wait} Updating Capital Framework's changelog..."
-      exec "git clone #{cf} .", {cwd: path}, (err) ->
+      changelogLoc = path.join(tmpath, 'CHANGELOG.md')
+      packageLoc = path.join(tmpath, 'package.json')
+      changelog tmpath, changelogLoc, packageLoc, (err, changes) ->
         return res.send "#{icons.failure} #{err}" if err
-        res.send "#{icons.wait} Updating Capital Framework's changelog..."
-        changelog path.join(__dirname, 'CHANGELOG.md'), path.join(__dirname, 'package.json'), (err, changes) ->
-          console.log changes
-          exec 'git commit -am "Preparing release"', {cwd: path}, (err) ->
+        exec 'git commit -am "Preparing release"', {cwd: tmpath}, (err) ->
+          return res.send "#{icons.failure} #{err}" if err
+          exec "git checkout -b #{branch}", {cwd: tmpath}, (err) ->
             return res.send "#{icons.failure} #{err}" if err
-            exec "git push https://#{token}:x-oauth-basic@github.com/contolini/capital-framework.git canary", {cwd: path}, (err, stdout, stderr) ->
+            exec "git push https://#{token}:x-oauth-basic@github.com/cfpb/capital-framework.git #{branch}", {cwd: tmpath}, (err, stdout, stderr) ->
               return res.send "#{icons.failure} #{err}" if err
-              cb null, stdout or stderr
-              cleanup()
+              pr token, branch, changes, (err, data) ->
+                return res.send "#{icons.failure} #{err}" if err
+                cb null, "Success! Here's the release PR: #{data.html_url}. Please verify its accuracy and merge away."
+                cleanup()
 
 module.exports = init
