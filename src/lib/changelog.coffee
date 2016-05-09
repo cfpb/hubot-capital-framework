@@ -47,7 +47,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     delete types[type] if types[type].length < 1
 
   # Abort if there's nothing to do
-  return false if not Object.keys(types).length
+  return cb "There's nothing to release!" if not Object.keys(types).length
 
   # First check if *only* capital-framework, and *no* components were updated
   bumpCF = do ->
