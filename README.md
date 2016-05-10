@@ -1,8 +1,10 @@
 # hubot-capital-framework [![Build Status](https://img.shields.io/travis/cfpb/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/cfpb/hubot-capital-framework) [![npm](https://img.shields.io/npm/v/hubot-capital-framework.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/hubot-capital-framework)
 
-:cat: A Hubot script to manage CFPB's [Capital Framework](https://github.com/cfpb/capital-framework).
+A Hubot script to manage CFPB's [Capital Framework](https://github.com/cfpb/capital-framework).
 
 See [`src/capital-framework.coffee`](src/capital-framework.coffee) for full documentation.
+
+![hubot-capital-framework screenshot](screenshot.png)
 
 ## Installation
 
