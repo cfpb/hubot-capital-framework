@@ -1,12 +1,13 @@
 fs = require 'fs'
 path = require 'path'
 semver = require 'semver'
+_ = require 'lodash'
 
 updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
 
   changelog = fs.readFileSync(changelogLocation, 'utf8')
   pkg = require packageLocation
-  bumpAllComponents = undefined
+  bumpAllComponents = {}
   bumpCF = false
 
   # Grab the "Unreleased" section and split it by markdown h3's
@@ -37,7 +38,10 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
             bump: (matches[2] or matches[6] or "").toLowerCase()
             notes: matches[7].trim()
           # If this is "all components", record the bump so we can bump all components later
-          bumpAllComponents = [bumpAllComponents, component.bump].sort().shift() if /^all/.test component.name
+          if /^all/.test component.name
+            bumpAllComponents[type] =
+              bump: [bumpAllComponents, component.bump].sort().shift()
+              notes: component.notes
           bumpCF = true if /^capital-framework/.test component.name
           components[type].push(component)
     return components
@@ -55,9 +59,23 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     nonCFBumps = 0
     cfBumpType = undefined
     for type of types
-      # Sort the components alphabetically
-      types[type] = types[type].sort (a, b) ->
-        return if a.name < b.name then -1 else 1
+      # While we're in here, make a note to bump all components if necessary
+      if bumpAllComponents[type]
+        for component in fs.readdirSync path.join(tmpLocation, 'src')
+          if /^cf-/.test component
+            componentGettingBumped = _.findKey(types[type], (c) -> c.name is component)
+            if componentGettingBumped != undefined
+              types[type][componentGettingBumped].bump = [bumpAllComponents[type].bump, types[type][componentGettingBumped].bump].sort().shift()
+            else
+              types[type].push {
+                name: component
+                bump: bumpAllComponents[type].bump
+                notes: bumpAllComponents[type].notes
+                extraneous: true
+              }
+        # Also, sort the components alphabetically
+        types[type] = types[type].sort (a, b) ->
+          return if a.name < b.name then -1 else 1
       for component in types[type]
         if /^capital-framework/.test component.name
           cfBumpType = [cfBumpType, component.bump].sort().shift()
@@ -83,7 +101,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
         # We're doing this ugly file reading instead of simply `require`ing because
         # the component manifests have a comment block that would get removed if we
         # `JSON.stringify`ed them.
-        manifestFile = path.join(tmpLocation, 'src', component.name, 'package.json')
+        manifestFile = path.join tmpLocation, 'src', component.name, 'package.json'
         manifest = fs.readFileSync manifestFile, 'utf8'
         bumpType = if bumpAllComponents then [bumpAllComponents, component.bump].sort().shift() else component.bump
         bump = semver.inc JSON.parse(manifest).version, bumpType
