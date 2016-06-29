@@ -10,27 +10,48 @@ chai.use require 'sinon-chai'
 
 changelog = require '../../src/lib/changelog'
 cf = 'https://github.com/cfpb/capital-framework.git'
+temp = {}
 
-describe 'capital-framework', ->
-  {robot, user, adapter} = {}
-  messageHelper = null
-
-  beforeEach (done) ->
+changelogTest = (name, done) ->
+  changelogLoc = path.join __dirname, "..", "fixtures", "changelog-#{name}.md"
+  changelogLocExpected = path.join __dirname, "..", "fixtures", "changelog-#{name}_expected.md"
+  packageLoc = path.join __dirname, "..", "fixtures", "package.json"
+  tmpPackageLoc = path.join temp.base, "package.json"
+  tmpChangelogLoc = path.join temp.base, "changelog-#{name}.md"
+  fs.copySync changelogLoc, tmpChangelogLoc
+  fs.copySync packageLoc, tmpPackageLoc
+  packageLoc = path.join __dirname, "..", "fixtures", "package.json"
+  changelog temp.test, tmpChangelogLoc, tmpPackageLoc, (err, changes) ->
+    before = fs.readFileSync tmpChangelogLoc, "utf8"
+    after = fs.readFileSync changelogLocExpected, "utf8"
+    expect(after).to.equal(before)
     do done
 
+describe 'capital-framework', ->
+  @timeout 20000
+
+  before (done) ->
+    tmp.dir {mode: '777', unsafeCleanup: true}, (err, tmpath, cleanup) ->
+      temp.base = path.join tmpath
+      temp.repo = path.join tmpath, 'repo'
+      temp.test = path.join tmpath, 'test'
+      fs.ensureDirSync temp.repo
+      fs.ensureDirSync temp.test
+      exec "git clone #{cf} .", {cwd: temp.repo}, (err) ->
+        do done
+
+  beforeEach (done) ->
+    fs.copy temp.repo, temp.test, {clobber: true}, done
+
   describe 'changelog helper', ->
+    it 'processes a simple changelog', (done) ->
+      changelogTest 'simple', done
 
     it 'processes a complex changelog', (done) ->
-      @timeout 20000
-      tmp.dir {mode: '777', unsafeCleanup: true}, (err, tmpath, cleanup) ->
-        exec "git clone #{cf} .", {cwd: tmpath}, (err) ->
-          changelogLoc = path.join __dirname, '..', 'fixtures', 'changelog-complex.md'
-          changelogLocExpected = path.join __dirname, '..', 'fixtures', 'changelog-complex_expected.md'
-          tmpChangelogLoc = path.join tmpath, 'changelog-complex.md'
-          fs.copySync(changelogLoc, tmpChangelogLoc);
-          packageLoc = path.join __dirname, '..', 'fixtures', 'package.json'
-          changelog tmpath, tmpChangelogLoc, packageLoc, (err, changes) ->
-            before = fs.readFileSync tmpChangelogLoc, 'utf8'
-            after = fs.readFileSync changelogLocExpected, 'utf8'
-            expect(after).to.equal(before)
-            do done
+      changelogTest 'complex', done
+
+    it 'processes a changelog of only "all components"', (done) ->
+      changelogTest 'all', done
+
+    it 'processes a changelog of only "capital-framework"', (done) ->
+      changelogTest 'cf', done

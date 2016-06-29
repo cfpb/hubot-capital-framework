@@ -88,7 +88,6 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     pkg.version = semver.inc pkg.version, bumpCF
     unreleased = "Bump Capital Framework to #{pkg.version}. No components were updated."
     fs.writeFileSync(packageLocation, JSON.stringify(pkg, null, 2));
-    return cb null, unreleased
 
   # Otherwise, bump the components mentioned in the changelog
   unreleased = ""
@@ -96,7 +95,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     heading = if types[type].length then "### #{type[0].toUpperCase() + type.slice 1}\n" else ""
     listItems = ""
     for component in types[type]
-      listItems += "- **#{component.name}:** #{component.notes}\n"
+      listItems += "- **#{component.name}:** #{component.notes}\n" if not component.extraneous
       try
         # We're doing this ugly file reading instead of simply `require`ing because
         # the component manifests have a comment block that would get removed if we
