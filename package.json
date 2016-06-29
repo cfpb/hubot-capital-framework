@@ -20,10 +20,12 @@
   "dependencies": {
     "coffee-script": "~1.10",
     "github": "ludovicderochethales/node-github#8b9740669ff0cc34c8cc27c95da144e1c216559e",
+    "lodash": "^4.13.1",
     "tmp": "0.0.28"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "fs-extra": "^0.30.0",
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-mocha-test": "~0.12.7",

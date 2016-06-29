@@ -1,0 +1,57 @@
+chai = require 'chai'
+sinon = require 'sinon'
+tmp = require 'tmp'
+{exec} = require 'child_process'
+path = require 'path'
+fs = require 'fs-extra'
+expect = chai.expect
+
+chai.use require 'sinon-chai'
+
+changelog = require '../../src/lib/changelog'
+cf = 'https://github.com/cfpb/capital-framework.git'
+temp = {}
+
+changelogTest = (name, done) ->
+  changelogLoc = path.join __dirname, "..", "fixtures", "changelog-#{name}.md"
+  changelogLocExpected = path.join __dirname, "..", "fixtures", "changelog-#{name}_expected.md"
+  packageLoc = path.join __dirname, "..", "fixtures", "package.json"
+  tmpPackageLoc = path.join temp.base, "package.json"
+  tmpChangelogLoc = path.join temp.base, "changelog-#{name}.md"
+  fs.copySync changelogLoc, tmpChangelogLoc
+  fs.copySync packageLoc, tmpPackageLoc
+  packageLoc = path.join __dirname, "..", "fixtures", "package.json"
+  changelog temp.test, tmpChangelogLoc, tmpPackageLoc, (err, changes) ->
+    before = fs.readFileSync tmpChangelogLoc, "utf8"
+    after = fs.readFileSync changelogLocExpected, "utf8"
+    expect(after).to.equal(before)
+    do done
+
+describe 'capital-framework', ->
+  @timeout 20000
+
+  before (done) ->
+    tmp.dir {mode: '777', unsafeCleanup: true}, (err, tmpath, cleanup) ->
+      temp.base = path.join tmpath
+      temp.repo = path.join tmpath, 'repo'
+      temp.test = path.join tmpath, 'test'
+      fs.ensureDirSync temp.repo
+      fs.ensureDirSync temp.test
+      exec "git clone #{cf} .", {cwd: temp.repo}, (err) ->
+        do done
+
+  beforeEach (done) ->
+    fs.copy temp.repo, temp.test, {clobber: true}, done
+
+  describe 'changelog helper', ->
+    it 'processes a simple changelog', (done) ->
+      changelogTest 'simple', done
+
+    it 'processes a complex changelog', (done) ->
+      changelogTest 'complex', done
+
+    it 'processes a changelog of only "all components"', (done) ->
+      changelogTest 'all', done
+
+    it 'processes a changelog of only "capital-framework"', (done) ->
+      changelogTest 'cf', done
