@@ -102,7 +102,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
         # `JSON.stringify`ed them.
         manifestFile = path.join tmpLocation, 'src', component.name, 'package.json'
         manifest = fs.readFileSync manifestFile, 'utf8'
-        bumpType = if bumpAllComponents then [bumpAllComponents, component.bump].sort().shift() else component.bump
+        bumpType = if bumpAllComponents.bump then [bumpAllComponents.bump, component.bump].sort().shift() else component.bump
         bump = semver.inc JSON.parse(manifest).version, bumpType
         manifest = manifest.replace /("version"\:\s*")[\d\.]+",/, '$1' + bump + '",'
         fs.writeFileSync manifestFile, manifest
