@@ -3,9 +3,20 @@ We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
 
 ## Unreleased
 
+### Added
+- **capital-framework:** Added CSS autoprefixer to build pipeline.
+
 ### Changed
-- **all components:** Eat lots of gnocchi.
-- **cf-typography:** Go to school.
+- **cf-typography:** Many documentation fixes and standardization.
+- **cf-core:** Standardized the usage doc.
+- **cf-tables:** Fix documentation order and details.
+
+### Removed
+- **cf-typography:** Removed remaining Less from branded bullets
+- **cf-buttons:** Removed vendor prefixes handled by autoprefixer.
+- **cf-core:** Removed vendor prefixes handled by autoprefixer.
+- **cf-grid:** Removed vendor prefixes handled by autoprefixer.
+- **cf-icons:** Removed vendor prefixes handled by autoprefixer.
 
 
 ## 3.4.1 - 2016-05-13

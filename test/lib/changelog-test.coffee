@@ -31,6 +31,7 @@ changelogTest = (name, done) ->
         loc = path.join(temp.test, 'src', c, 'package.json')
         version = require(loc).version
         # Ensure each version is non-null
+        # console.log require(loc).name, version
         expect(semver.valid(version)).to.be.ok
     expect(after).to.equal(before)
     do done
@@ -58,11 +59,17 @@ describe 'capital-framework', ->
     it 'processes a simple changelog', (done) ->
       changelogTest 'simple', done
 
+    it 'processes a broken changelog', (done) ->
+      changelogTest 'broken', done
+
     it 'processes a complex changelog', (done) ->
       changelogTest 'complex', done
 
     it 'processes a changelog of only "all components"', (done) ->
       changelogTest 'all', done
+
+    it 'processes a complex changelog including "all components"', (done) ->
+      changelogTest 'all-complex', done
 
     it 'processes a changelog with duplicate fixes', (done) ->
       changelogTest 'duplicate', done

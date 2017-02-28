@@ -4,8 +4,15 @@ We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
 ## Unreleased
 
 ### Changed
-- **all components:** Eat lots of gnocchi.
-- **cf-typography:** Go to school.
+- **all components:** Corrected the variables correct names, locations, and organization
+- **all components:** Standardized all the usage docs for v4
+- **cf-core:** Updated the base list styles to match latest DM Spec
+- **cf-core:** Updated the body copy elements to remove margin from the `last-child`
+
+### Removed
+- **all components:** Deprecated code
+  - Deprecated webfont mixins
+  - Extra select element
 
 
 ## 3.4.1 - 2016-05-13

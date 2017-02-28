@@ -40,7 +40,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
           # If this is "all components", record the bump so we can bump all components later
           if /^all/.test component.name
             bumpAllComponents[type] =
-              bump: [bumpAllComponents, component.bump].sort().shift()
+              bump: [bumpAllComponents.bump, component.bump].sort().shift()
               notes: component.notes
           bumpCF = true if /^capital-framework/.test component.name
           components[type].push(component)
@@ -55,7 +55,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
 
   # First check if *only* capital-framework, and *no* components were updated
   bumpCF = do ->
-    return bumpCF if not bumpCF
+    return bumpCF if not bumpCF and not Object.keys(bumpAllComponents).length
     nonCFBumps = 0
     cfBumpType = undefined
     for type of types
@@ -90,23 +90,33 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     fs.writeFileSync(packageLocation, JSON.stringify(pkg, null, 2));
 
   # Otherwise, bump the components mentioned in the changelog
+  componentsToBump = {}
+  for type of types
+    for component in types[type]
+      if not componentsToBump[component.name]
+        componentsToBump[component.name] = component.bump
+      else
+        componentsToBump[component.name] = [componentsToBump[component.name].bump, component.bump].sort().shift()
+
+  for component of componentsToBump
+    try
+      # We're doing this ugly file reading instead of simply `require`ing because
+      # the component manifests have a comment block that would get removed if we
+      # `JSON.stringify`ed them.
+      manifestFile = path.join tmpLocation, 'src', component, 'package.json'
+      manifest = fs.readFileSync manifestFile, 'utf8'
+      bumpType = if bumpAllComponents.bump then [bumpAllComponents.bump, componentsToBump[component]].sort().shift() else componentsToBump[component]
+      bump = semver.inc JSON.parse(manifest).version, bumpType
+      manifest = manifest.replace /("version"\:\s*")[\d\.]+",/, '$1' + bump + '",'
+      fs.writeFileSync manifestFile, manifest
+    catch e
+
   unreleased = ""
   for type of types
     heading = if types[type].length then "### #{type[0].toUpperCase() + type.slice 1}\n" else ""
     listItems = ""
     for component in types[type]
       listItems += "- **#{component.name}:** #{component.notes}\n" if not component.extraneous
-      try
-        # We're doing this ugly file reading instead of simply `require`ing because
-        # the component manifests have a comment block that would get removed if we
-        # `JSON.stringify`ed them.
-        manifestFile = path.join tmpLocation, 'src', component.name, 'package.json'
-        manifest = fs.readFileSync manifestFile, 'utf8'
-        bumpType = if bumpAllComponents.bump then [bumpAllComponents.bump, component.bump].sort().shift() else component.bump
-        bump = semver.inc JSON.parse(manifest).version, bumpType
-        manifest = manifest.replace /("version"\:\s*")[\d\.]+",/, '$1' + bump + '",'
-        fs.writeFileSync manifestFile, manifest
-      catch e
     unreleased += "#{heading}#{listItems}"
     # Add a line break if it's not the last section
     unreleased += "\n" if type != Object.keys(types)[Object.keys(types).length - 1]
