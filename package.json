@@ -1,7 +1,7 @@
 {
   "name": "hubot-capital-framework",
   "description": "A Hubot script to manage CFPB's Capital Framework",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "author": "Chris Contolini <contolini@users.noreply.github.com>",
   "license": "CC0",
   "keywords": [
