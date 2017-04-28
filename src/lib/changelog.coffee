@@ -112,17 +112,22 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
     catch e
 
   unreleased = ""
+  unreleasedPreview = ""
   for type of types
     heading = if types[type].length then "### #{type[0].toUpperCase() + type.slice 1}\n" else ""
     listItems = ""
+    listItemsPreview = ""
     for component in types[type]
       listItems += "- **#{component.name}:** #{component.notes}\n" if not component.extraneous
+      listItemsPreview += "- **#{component.name}:** [#{component.bump}] #{component.notes}\n" if not component.extraneous
     unreleased += "#{heading}#{listItems}"
+    unreleasedPreview += "#{heading}#{listItemsPreview}"
     # Add a line break if it's not the last section
     unreleased += "\n" if type != Object.keys(types)[Object.keys(types).length - 1]
+    unreleasedPreview += "\n" if type != Object.keys(types)[Object.keys(types).length - 1]
 
   changelog = changelog.replace unreleasedSection, "## Unreleased\n\n#{unreleased}\n"
   fs.writeFileSync changelogLocation, changelog
-  cb null, unreleased
+  cb null, unreleased, unreleasedPreview
 
 module.exports = updateChangelog

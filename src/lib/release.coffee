@@ -19,7 +19,7 @@ init = (res, cb) ->
       res.send "#{icons.wait} Updating Capital Framework's changelog..."
       changelogLoc = path.join(tmpath, 'CHANGELOG.md')
       packageLoc = path.join(tmpath, 'package.json')
-      changelog tmpath, changelogLoc, packageLoc, (err, changes) ->
+      changelog tmpath, changelogLoc, packageLoc, (err, changes, changesPreview) ->
         return cb err if err
         exec 'git commit -am "Preparing release"', {cwd: tmpath}, (err) ->
           return cb err if err
@@ -27,7 +27,7 @@ init = (res, cb) ->
             return cb err if err
             exec "git push https://#{token}:x-oauth-basic@github.com/cfpb/capital-framework.git #{branch}", {cwd: tmpath}, (err, stdout, stderr) ->
               return cb err if err
-              pr token, branch, changes, (err, data) ->
+              pr token, branch, changesPreview, (err, data) ->
                 return cb err if err
                 cb null, "Success! Here's the release PR: #{data.html_url}. Please verify its accuracy and merge away."
                 cleanup()
