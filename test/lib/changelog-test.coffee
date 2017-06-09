@@ -36,8 +36,8 @@ changelogTest = (name, done) ->
     expect(after).to.equal(before)
     do done
 
-describe 'capital-framework', ->
-  @timeout 10000
+describe 'capital-framework changelog', ->
+  @timeout 20000
 
   before (done) ->
     tmp.dir {mode: '777', unsafeCleanup: false}, (err, tmpath, cleanup) ->
