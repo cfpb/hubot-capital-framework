@@ -12,7 +12,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
 
   # Grab the "Unreleased" section and split it by markdown h3's
   version = pkg.version.replace(/\./g, '\\.')
-  unreleasedSection = changelog.match(new RegExp "(?=## Unreleased)([\\s\\S]+)(?=\n## #{version})", "igm")[0]
+  unreleasedSection = changelog.match(new RegExp "(?=## Unreleased)([\\s\\S]+?)(?=\n## [0-9]+?\.[0-9]+?\.[0-9]+?)", "igm")[0]
   lines = unreleasedSection.split('### ').filter((line) -> return line).slice(1)
 
   # Organize the unreleased changelog items by type ("added", "changed", or "removed")
@@ -25,7 +25,7 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
   types = do ->
     components = {}
     bumpType = "(\\[?(major|minor|patch)\\]?)"
-    componentName = "(\\*\\*(cf\\-[\\w\\-]+|all components|capital\\-framework):?\\*\\*)"
+    componentName = "(\\*\\*(cf\\-[\\w\\-]+|all components|capital\\-framework):?\\*\\*):?"
     notes = "([\\s\\S]+)"
     re = new RegExp "#{bumpType}?\\s?#{componentName}\\s+#{bumpType}?#{notes}", "i"
     for type of types

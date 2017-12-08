@@ -12,17 +12,10 @@ We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
 ### Removed
 -
 
-## 3.4.1 - 2016-05-13
+## 3.4.0 - 2016-05-13
 
 ### Changed
 - **capital-framework:** Update contributing documentation.
-
-
-## 3.4.0 - 2016-05-09
-
-### Changed
-- **cf-layout:** Updated main content spacing
-
 
 ## 3.3.0 - 2016-04-06
 
