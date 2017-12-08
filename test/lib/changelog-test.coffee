@@ -76,3 +76,6 @@ describe 'capital-framework changelog', ->
 
     it 'processes a changelog of only "capital-framework"', (done) ->
       changelogTest 'cf', done
+
+    it 'processes a changelog even if the markdown is a little weird', (done) ->
+      changelogTest 'colon', done
