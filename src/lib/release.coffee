@@ -22,7 +22,7 @@ init = (res, cb) ->
       changelog tmpath, changelogLoc, packageLoc, (err, changes, changesPreview) ->
         return res.send "#{icons.failure} #{err}" if err
         setTimeout ->
-          res.send "#{icons.wait} Running `npm install' to update the lockfile. This could take a few minutes..."
+          res.send "#{icons.wait} Running `npm install` to update the lockfile. This could take a few minutes..."
         , 1000
         exec 'npm install', {cwd: tmpath}, (err) ->
           return res.send "#{icons.failure} #{err}" if err
