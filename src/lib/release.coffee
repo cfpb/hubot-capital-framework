@@ -21,7 +21,9 @@ init = (res, cb) ->
       packageLoc = path.join(tmpath, 'package.json')
       changelog tmpath, changelogLoc, packageLoc, (err, changes, changesPreview) ->
         return res.send "#{icons.failure} #{err}" if err
-        res.send "#{icons.wait} Running `npm install`. This could take a few minutes..."
+        setTimeout ->
+          res.send "#{icons.wait} Running `npm install' to update the lockfile. This could take a few minutes..."
+        , 1000
         exec 'npm install', {cwd: tmpath}, (err) ->
           return res.send "#{icons.failure} #{err}" if err
           exec 'git commit -am "Preparing release"', {cwd: tmpath}, (err) ->
@@ -33,6 +35,7 @@ init = (res, cb) ->
                 return cb err if err
                 pr token, branch, changesPreview, (err, data) ->
                   return cb err if err
-                  cb null, "Success! Here's the release PR: #{data.html_url}. Please verify its accuracy and merge away."
+                  username = res.envelope.user.name or 'Success!'
+                  cb null, "#{username} Here's the release PR: #{data.html_url}. Please verify its accuracy and merge away."
 
 module.exports = init
