@@ -25,6 +25,15 @@ pr = (token, branch, body, cb) ->
   If I do something wrong, [blame a human](https://github.com/cfpb/hubot-capital-framework/issues/new).
 
   ![kitten gif](http://thecatapi.com/api/images/get?format=src&type=gif)
+
+  ## You are not
+
+  After this PR is merged, you should be prepared to update the CF dependencies I've released in the following projects:
+
+  - [ ] [capital-framework gh-pages branch](https://github.com/cfpb/capital-framework/tree/gh-pages)
+  - [ ] [design-manual](https://github.com/cfpb/design-manual/)
+  - [ ] [generator-cf](https://github.com/cfpb/generator-cf/)
+  - [ ] [cfgov-refresh](https://github.com/cfpb/cfgov-refresh/)
   """
 
   github.pullRequests.create user: 'cfpb', repo: 'capital-framework', title: 'CF Release', base: 'master', head: branch, body: body, (err, data) ->
