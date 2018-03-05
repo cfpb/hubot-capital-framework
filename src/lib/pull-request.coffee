@@ -31,13 +31,13 @@ pr = (token, branch, body, cb) ->
   After this PR is merged, you should be prepared to update the CF dependencies I've released in the following projects:
 
   - [ ] [capital-framework gh-pages branch](https://github.com/cfpb/capital-framework/tree/gh-pages) - 
-        The documentation site for Capital Framework, entire repo could be affected.
+        The documentation site for Capital Framework, entire repo (including build process) could be affected.
   - [ ] [design-manual](https://github.com/cfpb/design-manual/) - 
-        The documentation site for the Design Manual, entire repo could be affected.
+        The documentation site for the Design Manual, entire repo (including build process) could be affected.
   - [ ] [generator-cf](https://github.com/cfpb/generator-cf/) - 
         The Yeoman generator for creating new CFPB projects, only the app/templates directory should be affected.
   - [ ] [cfgov-refresh](https://github.com/cfpb/cfgov-refresh/) - 
-        The CFPB website, cfgov/jinja2/v1, cfgov/unprocessed, and cfgov/wellbeing could all be affected.
+        The CFPB website, build process, cfgov/jinja2/v1, cfgov/unprocessed, and cfgov/wellbeing could all be affected.
   """
 
   github.pullRequests.create user: 'cfpb', repo: 'capital-framework', title: 'CF Release', base: 'master', head: branch, body: body, (err, data) ->
