@@ -26,7 +26,9 @@
     "postinstall": "node scripts/npm/postinstall",
     "release": "./scripts/travis/release.sh",
     "build": "gulp build",
-    "test": "gulp test && node test/accessibility/wcag.js"
+    "test": "gulp test && node test/accessibility/wcag.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "devDependencies": {
     "bluebird": "^3.0.5",
@@ -77,6 +79,8 @@
   },
   "dependencies": {
     "async": "^1.5.0",
-    "npmi": "^1.0.1"
-  }
+    "npmi": "^2.0.1",
+    "snyk": "^1.83.0"
+  },
+  "snyk": true
 }
