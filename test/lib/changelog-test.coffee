@@ -31,7 +31,7 @@ changelogTest = (name, done) ->
         loc = path.join(temp.test, 'src', c, 'package.json')
         version = require(loc).version
         # Ensure each version is non-null
-        # console.log require(loc).name, version
+        console.log require(loc).name, version
         expect(semver.valid(version)).to.be.ok
     expect(after).to.equal(before)
     do done
@@ -79,3 +79,6 @@ describe 'capital-framework changelog', ->
 
     it 'processes a changelog even if the markdown is a little weird', (done) ->
       changelogTest 'colon', done
+
+    it 'processes a changelog that has a minor bump before a patch bump', (done) ->
+      changelogTest 'minorpatch', done
