@@ -37,7 +37,7 @@ changelogTest = (name, done) ->
     do done
 
 describe 'capital-framework changelog', ->
-  @timeout 20000
+  @timeout 60000
 
   before (done) ->
     tmp.dir {mode: '777', unsafeCleanup: false}, (err, tmpath, cleanup) ->
