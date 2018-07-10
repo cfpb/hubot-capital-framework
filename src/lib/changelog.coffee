@@ -96,19 +96,20 @@ updateChangelog = (tmpLocation, changelogLocation, packageLocation, cb) ->
       if not componentsToBump[component.name]
         componentsToBump[component.name] = component.bump
       else
-        componentsToBump[component.name] = [componentsToBump[component.name].bump, component.bump].sort().shift()
+        componentsToBump[component.name] = [componentsToBump[component.name], component.bump].sort().shift()
 
   for component of componentsToBump
     try
-      # We're doing this ugly file reading instead of simply `require`ing because
-      # the component manifests have a comment block that would get removed if we
-      # `JSON.stringify`ed them.
-      manifestFile = path.join tmpLocation, 'src', component, 'package.json'
-      manifest = fs.readFileSync manifestFile, 'utf8'
-      bumpType = if bumpAllComponents.bump then [bumpAllComponents.bump, componentsToBump[component]].sort().shift() else componentsToBump[component]
-      bump = semver.inc JSON.parse(manifest).version, bumpType
-      manifest = manifest.replace /("version"\:\s*")[\d\.]+",/, '$1' + bump + '",'
-      fs.writeFileSync manifestFile, manifest
+      if componentsToBump[component]
+        # We're doing this ugly file reading instead of simply `require`ing because
+        # the component manifests have a comment block that would get removed if we
+        # `JSON.stringify`ed them.
+        manifestFile = path.join tmpLocation, 'src', component, 'package.json'
+        manifest = fs.readFileSync manifestFile, 'utf8'
+        bumpType = if bumpAllComponents.bump then [bumpAllComponents.bump, componentsToBump[component]].sort().shift() else componentsToBump[component]
+        bump = semver.inc JSON.parse(manifest).version, bumpType
+        manifest = manifest.replace /("version"\:\s*")[\d\.]+",/, '$1' + bump + '",'
+        fs.writeFileSync manifestFile, manifest
     catch e
 
   unreleased = ""
